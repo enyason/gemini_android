@@ -1,35 +1,34 @@
 package com.love.geminiandroid.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.rounded.MailOutline
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Regular
+import compose.icons.fontawesomeicons.regular.ClosedCaptioning
+import compose.icons.fontawesomeicons.regular.Comment
+import compose.icons.fontawesomeicons.regular.FileImage
 
-sealed class Screens(name: String)
-
-class TextScreen(name: String = "text") : Screens(name)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainApp() {
 
     val items = listOf(
-        Icons.Filled.MailOutline to "Text",
-        Icons.Filled.Person to "Photo",
-        Icons.Filled.Send to "Chat"
+        FontAwesomeIcons.Regular.ClosedCaptioning to "Text",
+        FontAwesomeIcons.Regular.FileImage to "Photo",
+        FontAwesomeIcons.Regular.Comment to "Chat"
     )
     val navController = rememberNavController()
     Scaffold(
@@ -40,8 +39,9 @@ fun MainApp() {
                     NavigationBarItem(
                         icon = {
                             Icon(
-                                Icons.Rounded.MailOutline,
-                                contentDescription = item.second
+                                item.first,
+                                contentDescription = item.second,
+                                modifier = Modifier.size(16.dp)
                             )
                         },
                         label = { Text(item.second) },
