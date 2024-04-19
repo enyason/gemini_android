@@ -1,5 +1,6 @@
 package com.love.geminiandroid.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import java.util.*
 import kotlinx.coroutines.launch
 
 enum class Participant {
@@ -43,10 +44,45 @@ enum class Participant {
 
 // TODO() When creating an instance of this, use UUID.randomUUID().toString() to generate the ID
 data class ChatMessage(
-    val id: String,
+    val id: String = UUID.randomUUID().toString(),
     var text: String,
     val participant: Participant,
     var isPending: Boolean = false
+)
+
+val dummyChatHistory = listOf(
+    ChatMessage(
+        text = "Hi",
+        participant = Participant.USER,
+    ),
+    ChatMessage(
+        text = "Hello, How can I help you today?",
+        participant = Participant.MODEL,
+    ),
+    ChatMessage(
+        text = "What role do you see AI playing in the future of technology?",
+        participant = Participant.USER,
+    ),
+    ChatMessage(
+        text = "Artificial intelligence (AI) is expected to be a major driver of future technology, with wide-ranging impacts across many sectors. Here are some of the potential roles AI could play:\n" +
+                "\n" +
+                "**1. Automation:** AI is already being used to automate tasks in various industries, from manufacturing to customer service. In the future, AI could automate even more complex tasks, potentially leading to increased efficiency and productivity.\n" +
+                "\n" +
+                "**2. Enhanced decision-making:** AI can analyze vast amounts of data to identify patterns and trends that humans might miss. This can be used to improve decision-making in areas like finance, healthcare, and business strategy.\n" +
+                "\n" +
+                "**3. Scientific advancement:** AI can be used to analyze scientific data and run simulations, accelerating scientific discovery and innovation. For instance, AI could be used to design new materials, drugs, and clean energy technologies.\n" +
+                "\n" +
+                "**4. Personalized experiences:** AI can be used to personalize user experiences across different technologies. For example, AI-powered recommendation systems can suggest products or content that users are likely to enjoy.\n" +
+                "\n" +
+                "**5. Robotics:** AI is playing an increasingly important role in robotics. AI-powered robots can perform complex tasks in dangerous or difficult environments, such as search and rescue operations or deep-sea exploration.\n" +
+                "\n" +
+                "**6. Smarter infrastructure:** AI can be used to create smarter infrastructure systems, such as self-driving cars, which could revolutionize transportation. Additionally, AI could be used to optimize energy grids and improve traffic flow in cities.\n" +
+                "\n" +
+                "However, there are also challenges to consider with the widespread adoption of AI. These include issues of data privacy, bias in algorithms, and the potential for job displacement due to automation.\n" +
+                "\n" +
+                "Overall, AI has the potential to significantly transform the future of technology, bringing both benefits and challenges that society will need to address.",
+        participant = Participant.MODEL,
+    ),
 )
 
 @Composable
@@ -55,29 +91,32 @@ fun ChatScreen() {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    Scaffold(
-        bottomBar = {
-            MessageInput(
-                onSendMessage = { inputText ->
-
-                    // TODO() send message to gemini
-                },
-                resetScroll = {
-                    coroutineScope.launch {
-                        listState.scrollToItem(0)
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 80.dp)
+    ) {
+        // TODO() Messages List -> replace with messages from VM
+        ChatList(
+            dummyChatHistory,
+            listState,
+            Modifier
                 .fillMaxSize()
-        ) {
-            // TODO() Messages List -> replace with messages from VM
-            ChatList(emptyList(), listState)
-        }
+                .padding(16.dp)
+        )
+
+        MessageInput(
+            onSendMessage = { inputText ->
+                // TODO() send message to gemini
+            },
+            resetScroll = {
+                coroutineScope.launch {
+                    listState.scrollToItem(0)
+                }
+            },
+            Modifier
+                .fillMaxWidth()
+        )
     }
 }
 
@@ -85,11 +124,13 @@ fun ChatScreen() {
 @Composable
 fun ChatList(
     chatMessages: List<ChatMessage>,
-    listState: LazyListState
+    listState: LazyListState,
+    modifier: Modifier
 ) {
     LazyColumn(
         reverseLayout = true,
-        state = listState
+        state = listState,
+        modifier = modifier
     ) {
         items(chatMessages.reversed()) { message ->
             ChatBubbleItem(message)
@@ -161,13 +202,13 @@ fun ChatBubbleItem(
 @Composable
 fun MessageInput(
     onSendMessage: (String) -> Unit,
-    resetScroll: () -> Unit = {}
+    resetScroll: () -> Unit = {},
+    modifier: Modifier
 ) {
     var userMessage by rememberSaveable { mutableStateOf("") }
 
     ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
