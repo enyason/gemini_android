@@ -76,6 +76,7 @@ fun PhotoScreen() {
                         return@mapNotNull null
                     }
                 }
+                // TODO(call viewmodel to generate ai response with text and images)
 //                viewModel.reason(inputText, bitmaps)
             }
         }
@@ -126,7 +127,6 @@ fun PhotoReasoningScreen(
                 }
                 OutlinedTextField(
                     value = userQuestion,
-                    label = { Text("Question") },
                     placeholder = { Text("Upload an image and then ask a question") },
                     onValueChange = { userQuestion = it },
                     modifier = Modifier
@@ -164,6 +164,7 @@ fun PhotoReasoningScreen(
     }
 }
 
+// TODO(use this to represent the laoding state - AI is thinking)
 @Composable
 fun Loader() {
     Box(
@@ -176,6 +177,7 @@ fun Loader() {
     }
 }
 
+// TODO(use this to represent the error state - AI failed to process request or any form of exception)
 @Composable
 fun ErrorView(errorMessage: String) {
     Card(
@@ -196,6 +198,7 @@ fun ErrorView(errorMessage: String) {
 }
 
 
+// TODO(use this to represent the Content state - AI generated content)
 @Composable
 fun GeneratedContent(generatedText: String) {
     Card(

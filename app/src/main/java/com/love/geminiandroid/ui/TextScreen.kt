@@ -48,8 +48,7 @@ fun TextScreen() {
         ) {
             OutlinedTextField(
                 value = textToSummarize,
-                label = { Text("Text") },
-                placeholder = { Text("Enter text to generate") },
+                placeholder = { Text("Enter a prompt") },
                 onValueChange = { textToSummarize = it },
                 modifier = Modifier
                     .padding(16.dp)
@@ -59,18 +58,20 @@ fun TextScreen() {
                 onClick = {
                     if (textToSummarize.isNotBlank()) {
 
+                        // call gemini to generate text from prompt
                     }
                 },
                 modifier = Modifier
                     .padding(end = 16.dp, bottom = 16.dp)
                     .align(Alignment.End)
             ) {
-                Text("Go")
+                Text("Submit")
             }
         }
     }
 }
 
+// TODO(use this to represent the loading state - AI is thinking)
 @Composable
 fun Loading() {
     Box(
@@ -83,6 +84,7 @@ fun Loading() {
     }
 }
 
+// TODO(use this to represent the error state - AI failed to process request or any form of exception)
 @Composable
 fun ComposableForFailedGeneration(errorMessage: String) {
     Card(
@@ -103,6 +105,7 @@ fun ComposableForFailedGeneration(errorMessage: String) {
 }
 
 
+// TODO(use this to represent the Content state - AI generated content)
 @Composable
 fun ComposableForSuccessGeneration(generatedText: String) {
     Card(
